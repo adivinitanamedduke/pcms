@@ -22,7 +22,7 @@ builder.Services.AddApiVersioning(options =>
 })
 .AddApiExplorer(options =>
  {
-     options.GroupNameFormat = "'v'VVV";// Format: 'v' + major version (e.g., v1)
+     options.GroupNameFormat = "'v'VVV";// Format:e.g v1
      options.SubstituteApiVersionInUrl = true;
  });
 
@@ -97,10 +97,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 app.UseCors();
 app.MapControllers();
-
 app.Run();
 
