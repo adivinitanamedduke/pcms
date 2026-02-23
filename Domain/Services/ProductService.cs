@@ -3,7 +3,6 @@ using Core.Repository;
 using Core.Repository.Data;
 using Core.Models;
 using Domain.Utilities;
-using System.Collections.Concurrent;
 using Core.Cache;
 
 namespace Domain.Services;
@@ -16,28 +15,8 @@ public class ProductService(
     public async Task<IEnumerable<Product>> GetPagedProductsAsync(string? search, int? categoryId, int page, int pageSize)
     {
         string cacheKey = $"cat_{categoryId ?? 0}_search_{search?.ToLower().Trim() ?? "none"}";
-
-        //var allProducts = await Task.Run(() => _searchCache.GetOrAdd(cacheKey, _ =>
-        //{
-        //    var entities = categoryId.HasValue
-        //        ? repository.FindAsync(p => p.CategoryId == categoryId).GetAwaiter().GetResult()
-        //        : repository.GetAllAsync().GetAwaiter().GetResult();
-
-        //    var products = entities.Select(Core.Entities.Product.ToDomain).ToList();
-
-        //    if (!string.IsNullOrWhiteSpace(search))
-        //    {
-        //        var weights = new Dictionary<string, double> { { nameof(Product.Name), 1.0 }, { nameof(Product.Description), 0.5 } };
-        //        var engine = new ProductSearchEngine<Product>(products, weights);
-        //        products = engine.Search(search).ToList();
-        //    }
-
-        //    return products;
-        //}));
-        // 1. Check cache first (TryGet)
         var allProducts = await Task.FromResult(searchCache.GetOrAdd(cacheKey, () =>
         {
-            // 2. Fetch data using the existing thread context to avoid empty results
             var entities = categoryId.HasValue
                 ? repository.FindAsync(p => p.CategoryId == categoryId).GetAwaiter().GetResult()
                 : repository.GetAllAsync().GetAwaiter().GetResult();
@@ -68,7 +47,6 @@ public class ProductService(
     }
     public async Task<Product> CreateProductAsync(Product domainProduct)
     {
-        // Business Rule: Ensure category exists before creating product
         _ = await categoryRepository.GetByIdAsync(domainProduct.CategoryId)
             ?? throw new NotFoundException("Category", domainProduct.CategoryId);
 
