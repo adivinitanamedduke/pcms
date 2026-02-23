@@ -3,7 +3,7 @@ using Data.Entities;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
-namespace YourNamespace.Data.Repositories;
+namespace Data.Repositories;
 
 public class InMemoryCategoryRepository : IRepository<Category, int>
 {

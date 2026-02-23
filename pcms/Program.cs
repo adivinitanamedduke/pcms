@@ -5,12 +5,12 @@ using Core.Repository.Data;
 using Data;
 using Data.Entities;
 using Data.EntityFramework.Repositories;
+using Data.Repositories;
 using Data.Utilities;
 using Domain.Services;
 using Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
-using YourNamespace.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
