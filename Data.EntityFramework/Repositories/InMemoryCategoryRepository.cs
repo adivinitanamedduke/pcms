@@ -1,5 +1,5 @@
 ﻿using Core.Repository;
-using Data.Entities;
+using Core.Entities;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 

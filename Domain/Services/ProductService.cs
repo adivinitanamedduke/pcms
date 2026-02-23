@@ -1,32 +1,61 @@
 ﻿using Core.Exceptions;
 using Core.Repository;
 using Core.Repository.Data;
-using Data.Models;
+using Core.Models;
 using Domain.Utilities;
+using System.Collections.Concurrent;
+using Core.Cache;
 
 namespace Domain.Services;
 
 public class ProductService(
-    IRepository<Data.Entities.Product, int> repository,
-    IReadRepository<Data.Entities.Category, int> categoryRepository) : IProductService
+    IRepository<Core.Entities.Product, int> repository,
+    IReadRepository<Core.Entities.Category, int> categoryRepository,
+    ICacheProvider searchCache) : IProductService
 {
     public async Task<IEnumerable<Product>> GetPagedProductsAsync(string? search, int? categoryId, int page, int pageSize)
     {
-        var entities = categoryId.HasValue
-            ? await repository.FindAsync(p => p.CategoryId == categoryId)
-            : await repository.GetAllAsync();
+        string cacheKey = $"cat_{categoryId ?? 0}_search_{search?.ToLower().Trim() ?? "none"}";
 
-        var products = entities.Select(Data.Entities.Product.ToDomain).ToList();
+        //var allProducts = await Task.Run(() => _searchCache.GetOrAdd(cacheKey, _ =>
+        //{
+        //    var entities = categoryId.HasValue
+        //        ? repository.FindAsync(p => p.CategoryId == categoryId).GetAwaiter().GetResult()
+        //        : repository.GetAllAsync().GetAwaiter().GetResult();
 
-        if (!string.IsNullOrWhiteSpace(search))
+        //    var products = entities.Select(Core.Entities.Product.ToDomain).ToList();
+
+        //    if (!string.IsNullOrWhiteSpace(search))
+        //    {
+        //        var weights = new Dictionary<string, double> { { nameof(Product.Name), 1.0 }, { nameof(Product.Description), 0.5 } };
+        //        var engine = new ProductSearchEngine<Product>(products, weights);
+        //        products = engine.Search(search).ToList();
+        //    }
+
+        //    return products;
+        //}));
+        // 1. Check cache first (TryGet)
+        var allProducts = await Task.FromResult(searchCache.GetOrAdd(cacheKey, () =>
         {
-            var weights = new Dictionary<string, double> { { nameof(Product.Name), 1.0 }, { nameof(Product.Description), 0.5 } };
-            var engine = new ProductSearchEngine<Product>(products, weights);
-            products = engine.Search(search).ToList();
-        }
+            // 2. Fetch data using the existing thread context to avoid empty results
+            var entities = categoryId.HasValue
+                ? repository.FindAsync(p => p.CategoryId == categoryId).GetAwaiter().GetResult()
+                : repository.GetAllAsync().GetAwaiter().GetResult();
 
-        return products
-            .Skip((page - 1) * pageSize)
+            var products = entities.Select(Core.Entities.Product.ToDomain).ToList();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var weights = new Dictionary<string, double> { { nameof(Product.Name), 1.0 }, { nameof(Product.Description), 0.5 } };
+                var engine = new ProductSearchEngine<Product>(products, weights);
+                products = engine.Search(search).ToList();
+            }
+
+            return products;
+        }));
+
+        return allProducts
+                .Skip((page - 1) * pageSize)
             .Take(pageSize);
     }
 
@@ -35,7 +64,7 @@ public class ProductService(
         var entity = await repository.GetByIdAsync(id)
             ?? throw new NotFoundException(nameof(Product), id);
 
-        return Data.Entities.Product.ToDomain(entity);
+        return Core.Entities.Product.ToDomain(entity);
     }
     public async Task<Product> CreateProductAsync(Product domainProduct)
     {
@@ -43,7 +72,7 @@ public class ProductService(
         _ = await categoryRepository.GetByIdAsync(domainProduct.CategoryId)
             ?? throw new NotFoundException("Category", domainProduct.CategoryId);
 
-        var entity = new Data.Entities.Product
+        var entity = new Core.Entities.Product
         {
             Name = domainProduct.Name,
             SKU = domainProduct.SKU,
@@ -56,8 +85,9 @@ public class ProductService(
 
         await repository.AddAsync(entity);
         await repository.SaveChangesAsync();
-
-        return Data.Entities.Product.ToDomain(entity);
+        //Invalidate the cache
+        searchCache.Clear();
+        return Core.Entities.Product.ToDomain(entity);
     }
 
     public async Task UpdateProductAsync(int id, Product domainProduct)
@@ -73,11 +103,15 @@ public class ProductService(
 
         await repository.UpdateAsync(entity);
         await repository.SaveChangesAsync();
+        //Invalidate the cache
+        searchCache.Clear();
     }
 
     public async Task DeleteProductAsync(int id)
     {
         await repository.RemoveAsync(id);
         await repository.SaveChangesAsync();
+        //Invalidate the cache
+        searchCache.Clear();
     }
 }

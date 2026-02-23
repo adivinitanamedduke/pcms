@@ -1,7 +1,7 @@
-﻿using Data.Mapping;
+﻿using Core.Mapping;
 using System.ComponentModel.DataAnnotations;
 
-namespace Data.Entities;
+namespace Core.Entities;
 
 public class Product : IComparable<Product>, IMappable<Models.Product>
 {

@@ -1,5 +1,5 @@
 ﻿using Core.Repository;
-using Data.Mapping;
+using Core.Mapping;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

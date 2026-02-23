@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "pcms\API.csproj", "{0C9620DB-C65A-42A9-9DA5-0579A1ABF0F1}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{CD0FD664-603B-48F4-B43C-8B7E64D251CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.EntityFramework", "Data.EntityFramework\Data.EntityFramework.csproj", "{2D8C9A4A-4482-48A0-BDE9-44AFA1DF0C66}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{46366D92-10F4-43D3-994B-ECAB652974E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{2D8C9A4A-4482-48A0-BDE9-44AFA1DF0C66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D8C9A4A-4482-48A0-BDE9-44AFA1DF0C66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D8C9A4A-4482-48A0-BDE9-44AFA1DF0C66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{46366D92-10F4-43D3-994B-ECAB652974E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46366D92-10F4-43D3-994B-ECAB652974E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46366D92-10F4-43D3-994B-ECAB652974E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46366D92-10F4-43D3-994B-ECAB652974E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,7 @@
 ﻿using API.DTOs;
-using API.Utilities;
-using Data.Models;
+using Core.Models;
 using Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace API.Controllers.v1;
 

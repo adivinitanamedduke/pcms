@@ -1,8 +1,8 @@
-﻿using Data.Mapping;
+﻿using Core.Mapping;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Data.Entities;
+namespace Core.Entities;
 
 public class Category : IMappable<Models.Category>
 {

@@ -2,7 +2,7 @@
 using API.DTOs;
 using API.DTOs.RequestDtos;
 using Domain.Services;
-using Data.Models;
+using Core.Models;
 
 namespace API.Controllers.v1;
 
@@ -19,7 +19,7 @@ public class ProductsController : ControllerBase
         [FromQuery] string? search,
         [FromQuery] int? categoryId,
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] int pageSize = 50)
     {
         var items = await _productService.GetPagedProductsAsync(search, categoryId, page, pageSize);
         return Ok(items);

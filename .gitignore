@@ -1,0 +1,54 @@
+## Visual Studio 2022
+
+# Build results (Recursive check for all projects)
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+
+# Visual Studio specific
+.vs/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.opendb
+*.VC.db
+
+# Testing
+TestResults/
+*.coverage
+*.coveragexml
+_NCrunch_*
+
+# Tooling & Dependencies
+.idea/
+.vscode/
+node_modules/
+*.nupkg
+.nuget/
+*.nuget.props
+*.nuget.targets
+
+# Specific build artifacts
+*.ilk
+*.pdb
+*.exp
+*.lib
+*.sbr
+*.map
+*.binlog
+
+# Environment & Secrets
+.env
+*.publishsettings
+*.pubxml
+AppPackages/
+BundleArtifacts/
+
+# OS generated
+Thumbs.db
+desktop.ini

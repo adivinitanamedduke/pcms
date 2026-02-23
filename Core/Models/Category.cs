@@ -1,4 +1,4 @@
-﻿namespace Data.Models;
+﻿namespace Core.Models;
 public class Category
 {
     public required int Id { get; init; }

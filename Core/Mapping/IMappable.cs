@@ -1,4 +1,4 @@
-﻿namespace Data.Mapping;
+﻿namespace Core.Mapping;
 
 public interface IMappable<TDomain>
 {

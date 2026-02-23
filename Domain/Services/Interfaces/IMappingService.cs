@@ -1,4 +1,4 @@
-﻿using Data.Mapping;
+﻿using Core.Mapping;
 
 namespace Domain.Services;
 public interface IMappingService

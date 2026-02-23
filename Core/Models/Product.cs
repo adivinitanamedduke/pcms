@@ -1,4 +1,4 @@
-﻿namespace Data.Models;
+﻿namespace Core.Models;
 
 public class Product : IComparable<Product>
 {

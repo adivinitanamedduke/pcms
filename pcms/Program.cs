@@ -1,12 +1,14 @@
 using API.Middleware;
 using Asp.Versioning;
+using Core.Cache;
+using Core.Entities;
 using Core.Repository;
 using Core.Repository.Data;
 using Data;
-using Data.Entities;
 using Data.EntityFramework.Repositories;
 using Data.Repositories;
 using Data.Utilities;
+using Domain.Infrastructure;
 using Domain.Services;
 using Domain.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -39,12 +41,13 @@ builder.Services.AddSingleton<IRepository<Category, int>>(sp =>
 
 builder.Services.AddSingleton<IReadRepository<Category, int>>(sp =>
     sp.GetRequiredService<InMemoryCategoryRepository>());
+builder.Services.AddSingleton<ICacheProvider, ProductSearchCache>();
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;//Ensure all endpoints are in lowercase
 });
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer(); // Required for Swagger to find endpoints
+builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -68,8 +71,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .WithOrigins("https://localhost:4200");
+              .AllowAnyMethod();
     });
 });
 
@@ -84,7 +86,6 @@ app.UseGlobalExceptionHandler();
 // Custom middleware runs pattern matching
 app.UseMiddleware<ProductValidationMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -92,7 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "PCMS API v1");
-        options.RoutePrefix = string.Empty; // Serves Swagger UI at the app's root (localhost:port/)
+        options.RoutePrefix = string.Empty;
     });
 }
 
